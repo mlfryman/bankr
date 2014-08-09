@@ -4,8 +4,7 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('express-method-override');
 var home = require('../controllers/home');
-var priorities = require('../controllers/priorities');
-var tasks = require('../controllers/tasks');
+var accounts = require('../controllers/accounts');
 
 module.exports = function(app, express){
   app.use(morgan('dev'));
@@ -21,12 +20,13 @@ module.exports = function(app, express){
   app.get('/accounts/new', accounts.init);
   app.post('/accounts/new', accounts.create);
 
+  app.get('/accounts', accounts.showAll);
   app.get('/accounts/:id', accounts.overview);
-  app.get('/accounts/:id/transaction', accounts.trans-init);
-  app.get('/accounts/:id/transfer', accounts.xfer-init);
+  app.get('/accounts/:id/transaction', accounts.transInit);
+  app.get('/accounts/:id/transfer', accounts.xferInit);
 
-  app.post('/accounts/:id/transaction', accounts.trans-create);
-  app.post('/accounts/:id/transfer', accounts.xfer-create);
+  app.post('/accounts/:id/transaction', accounts.transCreate);
+  app.post('/accounts/:id/transfer', accounts.xferCreate);
 
 console.log('Pipeline Configured');
 };
