@@ -1,8 +1,7 @@
 'use strict';
 
 var Mongo = require('mongodb');
-var bcrypt = require('bcrypt');
-//var _ = require('lodash');
+var _ = require('lodash');
 //var Transaction = require('./transaction');
 //var Transfer = require('./transfer');
 
@@ -21,40 +20,29 @@ Object.defineProperty(Account, 'collection', {
   get: function(){return global.mongodb.collection('accounts');}
 });
 
-Account.prototype.create = function(cb){
-  var account = this;
-  hashPin(account.pin, function(hashedPin){
-    account.pin = hashedPin;
-    Account.collection.save(account, cb);
+Account.create = function(o, cb){
+  var a = new Account(o);
+  Account.collection.save(a, cb);
+};
+
+Account.findAll = function(cb){
+  Account.collection.find().toArray(cb);
+};
+
+Account.findById = function(id, cb){
+  var _id = Mongo.ObjectID(id);
+  Account.collection.findOne({_id:_id}, function(err, obj){
+    var account = changePrototype(obj);
+    cb(account);
   });
 };
 
-function findByIdAndPin(id, pin, cb){
-  var _id = Mongo.ObjectID(id);
-  Account.collection.findOne({_id:_id}, function(err, obj){
-    if(obj){
-      bcrypt.compare(pin, _id.pin, function(err, result){
-        if(result){
-          cb(result);
-        }else{
-          cb(null);
-        }
-        cb(null);
-      });
-    }
-  });
-}
 
-function hashPin(pin, cb){
-  bcrypt.hash(pin, 8, function(err, hash){
-    cb(hash);
-  });
-}
 
 module.exports = Account;
 
 // PRIVATE HELPER FUNCTION //
 
-//function changePrototype(obj){
-//  return _.create(Account.prototype, obj);
-//}
+function changePrototype(obj){
+  return _.create(Account.prototype, obj);
+}
