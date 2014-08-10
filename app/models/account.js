@@ -11,9 +11,10 @@ function Account(a){
   this.photo = a.photo;
   this.type = a.type;
   this.color = a.color;
-  this.pin = a.pin;
-  this.balance = a.balance;
-  this.date = new Date(a.date);
+  this.dateCreated = new Date(a.dateCreated);
+  this.pin = a.pin * 1;
+  this.initDeposit = parseFloat(a.initDeposit);
+  this.balance = parseFloat(a.balance);
 }
 
 Object.defineProperty(Account, 'collection', {
@@ -21,10 +22,10 @@ Object.defineProperty(Account, 'collection', {
 });
 
 Account.prototype.create = function(cb){
-  var self = this;
-  hashPin(self.pin, function(hashedPin){
-    self.pin = hashedPin;
-    Account.collection.save(self, cb);
+  var account = this;
+  hashPin(account.pin, function(hashedPin){
+    account.pin = hashedPin;
+    Account.collection.save(account, cb);
   });
 };
 

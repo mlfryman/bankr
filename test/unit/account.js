@@ -26,15 +26,17 @@ describe('Account', function(){
   });
   describe('constructor', function(){
     it('should create a new Account object', function(){
-      var o1 = {name:'Billy Jones', photo: 'photo.jpg', type: 'checking', color: 'pink', balance: '500', date:'3/11/2004'};
-      var a1 = new Account(o1);
-      expect(a1).to.be.instanceof(Account);
-      expect(a1.name).to.equal('Billy Jones');
-      expect(a1.photo).to.equal('photo.jpg');
-      expect(a1.type).to.equal('checking');
-      expect(a1.color).to.equal('pink');
-      expect(a1.balance).to.equal('500');
-      expect(a1.date).to.be.instanceof(Date);
+      var o = ;
+      var a = new Account(o);
+      expect(a._id).to.be.instanceof(Mongo.ObjectID);
+      expect(a).to.be.instanceof(Account);
+      expect(a.name).to.equal('Snowball');
+      expect(a.photo).to.equal('photo.jpg');
+      expect(a.type).to.equal('Checking');
+      expect(a.color).to.equal('blue');
+      expect(a.date).to.be.instanceof(Date);
+      expect(a.initDeposit).to.equal('500.00');
+      expect(a.balance).to.equal('500.00');
     });
   });
 
