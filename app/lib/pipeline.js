@@ -20,10 +20,10 @@ module.exports = function(app, express){
   app.get('/accounts/:id', accounts.show);
 
   app.get('/accounts/:id/transaction', accounts.transactionInit);
-  app.post('/accounts/:id/transaction', accounts.transaction);
+  app.put('/accounts/:id/transaction', accounts.transaction);
 
   app.get('/accounts/:id/transfer', accounts.transferInit);
-  app.post('/accounts/:id/transfer', accounts.transfer);
+  app.put('/accounts/:id/transfer', accounts.transfer);
 
 console.log('Pipeline Configured');
 };

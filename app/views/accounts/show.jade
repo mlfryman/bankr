@@ -17,12 +17,13 @@ block content
             tr
               td Opened:
               td= moment(account.opened).format('ll')
-      #photo
+      #photo 
         img(src='#{account.photo}', height='100px', width='100px')
-      #options
-        a(href='/accounts/#{account._id}/transaction') Transaction
-        br
-        a(href='/accounts/#{account._id}/transfer') Transfer
+      #options  
+        table
+          tr
+            td: a(href='/accounts/#{account._id}/transaction') Transaction
+            td: a(href='/accounts/#{account._id}/transfer') Transfer
     #activity
       #transactions
         table
