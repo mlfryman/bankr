@@ -4,14 +4,13 @@ html
     meta(charset='utf-8')
     title Bankr
     link(rel='stylesheet', href='/css/style.css')
-    body
-      .wrapper
-        div
-          h1: a(href='/') Super-secure Bankr App
-          nav
-          ul
-            li: a(href='/accounts/new') Add Account
-            li: a(href='/accounts') View Accounts
-            li: a(href='/') Home
-            .container
-              block content
+  body
+    header
+      h1 Super-Secure Bankr App
+    nav
+      ul
+        li: a(href='/') Home
+        li: a(href='/accounts/new') Add Account
+        li: a(href='/accounts') View Accounts
+  
+    block content

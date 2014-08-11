@@ -19,47 +19,47 @@ block content
               td= moment(account.opened).format('ll')
       #photo
         img(src='#{account.photo}', height='100px', width='100px')
-        #options
-          a(href='/accounts/#{account._id}/transaction') Transaction
-          br
-          a(href='/accounts/#{account._id}/transfer') Transfer
-          #activity
-            #transactions
-              table
-                caption Transactions
-                thead
-                  tr
-                    th Id
-                    th Date
-                    th Type
-                    th Amount
-                    th Fee
-                tbody
-                  each tr in account.transactions
-                    tr(style='background-color:#{helper.typeColor(tr.type)};')
-                      td= tr.id
-                      td= moment(tr.date).format('ll')
-                      td= tr.type
-                      td= helper.currencyFormat(tr.amount)
-                      td $#{tr.fee}
-                br
-            #transfers
-              table
-                caption Transfers
-                thead
-                  tr
-                    th Id
-                    th Date
-                    th From
-                    th To
-                    th Amount
-                    th Fee
-                  tbody
-                    each tr in account.transfers
-                      tr(style='background-color:#{helper.transColor(tr.from)};')
-                        td= tr.id
-                        td= moment(tr.date).format('ll')
-                        td= tr.from
-                        td= tr.to
-                        td= helper.currencyFormat(tr.amount)
-                        td $#{tr.fee}
+      #options
+        a(href='/accounts/#{account._id}/transaction') Transaction
+        br
+        a(href='/accounts/#{account._id}/transfer') Transfer
+    #activity
+      #transactions
+        table
+          caption Transactions
+          thead
+            tr
+              th Id
+              th Date
+              th Type
+              th Amount
+              th Fee
+          tbody
+            each tr in account.transactions
+              tr(style='background-color:#{helper.typeColor(tr.type)};')
+                td= tr.id
+                td= moment(tr.date).format('ll')
+                td= tr.type
+                td= helper.currencyFormat(tr.amount)
+                td $#{tr.fee}
+      br
+      #transfers
+        table
+          caption Transfers
+          thead
+            tr
+              th Id
+              th Date
+              th From
+              th To
+              th Amount
+              th Fee
+            tbody
+              each tr in account.transfers
+                tr(style='background-color:#{helper.transColor(tr.from)};')
+                  td= tr.id
+                  td= moment(tr.date).format('ll')
+                  td= tr.from
+                  td= tr.to
+                  td= helper.currencyFormat(tr.amount)
+                  td $#{tr.fee}

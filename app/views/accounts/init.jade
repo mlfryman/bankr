@@ -1,7 +1,7 @@
 extends ../shared/template
 block content
   #new
-    h2 Create a new account
+    h2 Create a New Account
     form(method='post', action='/accounts')
       table
         tbody
@@ -10,7 +10,7 @@ block content
             td: label Color
           tr
             td: input(type='text', name='name', placeholder='Fluffy McFlufferson')
-            td: input(type='color', name='color', value='silver')
+            td: input(type='color', name='color', value='#3E606F')
           tr
             td: label Avatar URL
             td: label PIN
