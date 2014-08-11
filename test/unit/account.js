@@ -5,7 +5,6 @@
 
 var expect = require('chai').expect;
 var Account = require('../../app/models/account');
-//var Transfer = require('../../app/models/transfer');
 var Mongo = require('mongodb');
 var dbConnect = require('../../app/lib/mongodb');
 var db = 'bankr-test';
@@ -30,7 +29,7 @@ describe('Account', function(){
 
   describe('Constructor', function(){
     it('Should create a new account with correct properties', function(){
-      var a = new Account({name:'Snowball', color:'blue', photo:'url', pin:'1234', type:'checking', deposit:'950'});
+      var a = new Account({name:'Snowball', color:'blue', photo:'url', pin:'1234', type:'checking', deposit:'500.00'});
       expect(a).to.be.instanceof(Account);
       expect(a.name).to.equal('Snowball');
       expect(a.dateCreated).to.respondTo('getDay');
@@ -38,7 +37,7 @@ describe('Account', function(){
       expect(a.photo).to.equal('url');
       expect(a.pin).to.equal('1234');
       expect(a.type).to.equal('checking');
-      expect(a.balance).to.be.closeTo(950, 0.1);
+      expect(a.balance).to.be.closeTo(500.00, 0.1);
       expect(a.numTransacts).to.equal(0);
       expect(a.transactions).to.have.length(0);
       expect(a.transferIds).to.have.length(0);
@@ -47,7 +46,7 @@ describe('Account', function(){
 
   describe('.create', function(){
     it('should create a new account in database', function(done){
-      Account.create({name:'Snowball', color:'blue', photo:'url', pin:'1234', type:'checking', deposit:'950'}, function(err, a){
+      Account.create({name:'Snowball', color:'blue', photo:'url', pin:'1234', type:'checking', deposit:'500.00'}, function(err, a){
         expect(a._id).to.be.instanceof(Mongo.ObjectID);
         done();
       });
@@ -86,9 +85,9 @@ describe('Account', function(){
 
   describe('.deposit', function(){
     it('should increase account balance', function(done){
-      Account.deposit({id:snowballId, type:'deposit', pin:'1234', amount:'500'}, function(){
+      Account.deposit({id:snowballId, type:'deposit', pin:'1234', amount:'500.00'}, function(){
         Account.findById(snowballId, function(a){
-          expect(a.balance).to.be.closeTo(1000, 0.1);
+          expect(a.balance).to.be.closeTo(1000.00, 0.1);
           expect(a.numTransacts).to.equal(3);
           expect(a.transactions).to.have.length(3);
           expect(a.transactions[2].id).to.equal(3);
@@ -97,10 +96,10 @@ describe('Account', function(){
         });
       });
     });
-    it('should not increase account balance (incorrect PIN)', function(done){
-      Account.deposit({id:snowballId, type:'deposit', pin:'1236', amount:'500'}, function(){
+    it('should not increase account balance - invalid PIN', function(done){
+      Account.deposit({id:snowballId, type:'deposit', pin:'1236', amount:'500.00'}, function(){
         Account.findById(snowballId, function(a){
-          expect(a.balance).to.be.closeTo(500, 0.1);
+          expect(a.balance).to.be.closeTo(500.00, 0.1);
           expect(a.numTransacts).to.equal(2);
           expect(a.transactions).to.have.length(2);
           done();
@@ -111,9 +110,9 @@ describe('Account', function(){
 
   describe('withdraw', function(){
     it('should reduce balance by amount', function(done){
-      Account.withdraw({id:snowballId, type:'withdraw', pin:'1235', amount:'250'}, function(){
+      Account.withdraw({id:snowballId, type:'withdraw', pin:'1234', amount:'250.00'}, function(){
         Account.findById(snowballId, function(a){
-          expect(a.balance).to.be.closeTo(250, 0.1);
+          expect(a.balance).to.be.closeTo(250.00, 0.1);
           expect(a.numTransacts).to.equal(3);
           expect(a.transactions).to.have.length(3);
           expect(a.transactions[2].id).to.equal(3);
@@ -123,10 +122,10 @@ describe('Account', function(){
         });
       });
     });
-    it('should not reduce balance by amount (incorrect PIN)', function(done){
-      Account.withdraw({id:snowballId, type:'withdraw', pin:'1235', amount:'250'}, function(){
+    it('should not reduce balance by amount - invalid PIN', function(done){
+      Account.withdraw({id:snowballId, type:'withdraw', pin:'1235', amount:'250.00'}, function(){
         Account.findById(snowballId, function(a){
-          expect(a.balance).to.be.closeTo(500, 0.1);
+          expect(a.balance).to.be.closeTo(500.00, 0.1);
           expect(a.numTransacts).to.equal(2);
           expect(a.transactions).to.have.length(2);
           done();
@@ -134,9 +133,9 @@ describe('Account', function(){
       });
     });
     it('should reduce balance by amount & charge 50 overdraft', function(done){
-      Account.withdraw({id:snowballId, type:'withdraw', pin:'1234', amount:'550'}, function(){
+      Account.withdraw({id:snowballId, type:'withdraw', pin:'1234', amount:'550.00'}, function(){
         Account.findById(snowballId, function(a){
-          expect(a.balance).to.be.closeTo(-100, 0.1);
+          expect(a.balance).to.be.closeTo(-100.00, 0.1);
           expect(a.numTransacts).to.equal(3);
           expect(a.transactions).to.have.length(3);
           expect(a.transactions[2].id).to.equal(3);
@@ -150,9 +149,9 @@ describe('Account', function(){
 
   describe('.transaction', function(){
     it('should perform a deposit', function(done){
-      Account.transaction({id:snowballId, type:'deposit', pin:'1234', amount:'500'}, function(){
+      Account.transaction({id:snowballId, type:'deposit', pin:'1234', amount:'500.00'}, function(){
         Account.findById(snowballId, function(a){
-          expect(a.balance).to.be.closeTo(1000, 0.1);
+          expect(a.balance).to.be.closeTo(1000.00, 0.1);
           expect(a.numTransacts).to.equal(3);
           expect(a.transactions).to.have.length(3);
           expect(a.transactions[2].id).to.equal(3);
@@ -190,8 +189,8 @@ describe('Account', function(){
         });
       });
     });
-    it('should not transfer funds from one account to another (wrong PIN)', function(done){
-      Account.transfer({from:'Snowball', to:'Ginger', pin:'1264', fromId:snowballId, toId:gingerId, amount:'250'}, function(){
+    it('should not transfer funds from one account to another - invalid PIN)', function(done){
+      Account.transfer({from:'Snowball', to:'Ginger', pin:'1264', fromId:snowballId, toId:gingerId, amount:'250.00'}, function(){
         Account.findById(snowballId, function(a){
           expect(a.balance).to.be.closeTo(500, 0.1);
           expect(a.transferIds).to.have.length(4);
@@ -203,8 +202,8 @@ describe('Account', function(){
         });
       });
     });
-    it('should not transfer funds from one account to another (Not enough money)', function(done){
-      Account.transfer({from:'Snowball', to:'Ginger', pin:'1234', fromId:snowballId, toId:gingerId, amount:'1000'}, function(){
+    it('should not transfer funds from one account to another - insufficient funds', function(done){
+      Account.transfer({from:'Snowball', to:'Ginger', pin:'1234', fromId:snowballId, toId:gingerId, amount:'1000.00'}, function(){
         Account.findById(snowballId, function(a){
           expect(a.balance).to.be.closeTo(500, 0.1);
           expect(a.transferIds).to.have.length(4);
