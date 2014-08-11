@@ -1,10 +1,10 @@
 'use strict';
 
+var accounts = require('../controllers/accounts');
+var home = require('../controllers/home');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('express-method-override');
-var home = require('../controllers/home');
-var accounts = require('../controllers/accounts');
 
 module.exports = function(app, express){
   app.use(morgan('dev'));
@@ -13,20 +13,17 @@ module.exports = function(app, express){
   app.use(methodOverride());
 
   app.get('/', home.index);
-  app.get('/about', home.about);
-  app.get('/faq', home.faq);
-  app.get('/contact', home.contact);
 
   app.get('/accounts/new', accounts.init);
-  app.post('/accounts/new', accounts.create);
+  app.post('/accounts', accounts.create);
+  app.get('/accounts', accounts.index);
+  app.get('/accounts/:id', accounts.show);
 
-  app.get('/accounts', accounts.showAll);
-  app.get('/accounts/:id', accounts.overview);
-  app.get('/accounts/:id/transaction', accounts.transInit);
-  app.get('/accounts/:id/transfer', accounts.xferInit);
+  app.get('/accounts/:id/transaction', accounts.transactionInit);
+  app.post('/accounts/:id/transaction', accounts.transaction);
 
-  app.post('/accounts/:id/transaction', accounts.transCreate);
-  app.post('/accounts/:id/transfer', accounts.xferCreate);
+  app.get('/accounts/:id/transfer', accounts.transferInit);
+  app.post('/accounts/:id/transfer', accounts.transfer);
 
 console.log('Pipeline Configured');
 };

@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title Bankr
+    link(rel='stylesheet', href='/css/style.css')
+    body
+      .wrapper
+        div
+          h1: a(href='/') Super-secure Bankr App
+          nav
+          ul
+            li: a(href='/accounts/new') Add Account
+            li: a(href='/accounts') View Accounts
+            li: a(href='/') Home
+            .container
+              block content

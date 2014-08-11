@@ -17,9 +17,9 @@ function Account(o){
   this.type = o.type;
   this.pin = o.pin;
   this.balance = o.deposit * 1;
-  this.numTransacts = 0;
+  this.numTract = 0;
   this.transactions = [];
-  this.transferIds = [];
+  this.xferIds = [];
 }
 
 Account.create = function(o, cb){
@@ -36,7 +36,7 @@ Account.findAll = function(cb){
 Account.findById = function(id, cb){
   id = makeOid(id);
   Account.collection.findOne({_id:id}, function(err, account){
-    async.map(account.transferIds, function(tId, done){
+    async.map(account.xferIds, function(tId, done){
       makeTransfer(tId, done, account.name);}, function(err, transfers){
         account.transfers = transfers;
         cb(account);
@@ -53,17 +53,17 @@ Account.findByIdLite = function(id, cb){
 Account.deposit = function(obj, cb){
   var id = makeOid(obj.id);
   var query = {_id:id};
-  var fields = {fields:{balance:1, pin:1, numTransacts:1}};
+  var fields = {fields:{balance:1, pin:1, numTract:1}};
   var deposit = _.cloneDeep(obj);
   deposit.amount *= 1;
   Account.collection.findOne(query, fields, function(err, a){
     if(obj.pin === a.pin){
       a.balance += deposit.amount;
-      deposit.id = a.numTransacts + 1;
+      deposit.id = a.numTract + 1;
       deposit.fee = '';
       deposit.date = new Date();
       delete deposit.pin;
-      Account.collection.update(query, {$set:{balance:a.balance}, $inc:{numTransacts:1}, $push:{transactions:deposit}}, function(){
+      Account.collection.update(query, {$set:{balance:a.balance}, $inc:{numTract:1}, $push:{transactions:deposit}}, function(){
         if(cb){cb();}
       });
     }else{
@@ -74,7 +74,7 @@ Account.deposit = function(obj, cb){
 
 Account.withdraw = function(obj, cb){
   var id = makeOid(obj.id);
-  var query = {_id:id}, fields = {fields:{balance:1, pin:1, numTransacts:1}};
+  var query = {_id:id}, fields = {fields:{balance:1, pin:1, numTract:1}};
   var withdraw = _.cloneDeep(obj);
   withdraw.amount *= 1;
   Account.collection.findOne(query, fields, function(err, a){
@@ -82,12 +82,12 @@ Account.withdraw = function(obj, cb){
     if(obj.pin === a.pin){
       a.balance -= withdraw.amount;
       a.balance -= (a.balance < 0) ? 50 : 0;
-      withdraw.id = a.numTransacts + 1;
+      withdraw.id = a.numTract + 1;
       withdraw.fee = (a.balance < 0) ? 50 : '';
       withdraw.date = new Date();
       delete withdraw.pin;
       console.log(withdraw);
-      Account.collection.update(query, {$set:{balance:a.balance}, $inc:{numTransacts:1}, $push:{transactions:withdraw}}, function(){
+      Account.collection.update(query, {$set:{balance:a.balance}, $inc:{numTract:1}, $push:{transactions:withdraw}}, function(){
         if(cb){cb();}
       });
     }else{
@@ -115,8 +115,8 @@ Account.transfer = function(obj, cb){
       Account.collection.findOne({_id:obj.toId}, {fields:{name:1}}, function(err, acct){
         obj.to = acct.name;
         Transfer.save(obj, function(err, t){
-          Account.collection.update({_id:a._id}, {$set:{balance:a.balance}, $push:{transferIds:t._id}}, function(){
-            Account.collection.update({_id:obj.toId}, {$inc:{balance:obj.amount}, $push:{transferIds:t._id}}, function(){
+          Account.collection.update({_id:a._id}, {$set:{balance:a.balance}, $push:{xferIds:t._id}}, function(){
+            Account.collection.update({_id:obj.toId}, {$inc:{balance:obj.amount}, $push:{xferIds:t._id}}, function(){
               if(cb){cb();}
             });
           });
